@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: doc_validator_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - app_network
+
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: doc_validator_php
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
